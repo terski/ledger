@@ -26,12 +26,12 @@ model Account {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   name              String
-  type              String
+  type              String // credit normal or debit normal
   currency          Currency @relation(fields: [currencyId], references: [id])
   currencyId        Int
-  posted_balance    Int
-  pending_balance   Int
-  available_balance Int
+  posted_balance    Int      @default(0)
+  pending_balance   Int      @default(0)
+  available_balance Int      @default(0)
   Entry             Entry[]
 }
 
@@ -43,7 +43,9 @@ model Entry {
   amount       Int
   account      Account   @relation(fields: [accountId], references: [id])
   accountId    Int
-  status       String
+  status       String // pending, posted, or archived
   direction    String // debit or credit
   discarded_at DateTime?
+
+  @@index([accountId, status, discarded_at])
 }
